@@ -1,0 +1,16 @@
+<?php
+// استقبال البيانات القادمة من الصفحة
+$data = json_decode(file_get_contents("php://input"), true);
+
+// استخراج البيانات
+$userWallet = $data['userWallet'];
+$amount = $data['amount'];
+
+// تخزين البيانات في ملف نصي (بديل مؤقت لقاعدة بيانات)
+$file = fopen("donation-log.txt", "a");
+fwrite($file, "رقم المحفظة: " . $userWallet . " | المبلغ: " . $amount . " جنيه | التاريخ: " . date("Y-m-d H:i:s") . "\n");
+fclose($file);
+
+// إرجاع استجابة ناجحة
+http_response_code(200);
+echo json_encode(["message" => "تم تسجيل التبرع بنجاح"]);
