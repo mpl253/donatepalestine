@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التبرع لفلسطين</title>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f5f5f5;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      background-color: white;
+      width: 90%;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #27ae60;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    button {
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background-color: #219150;
+    }
+
+    .wallet-section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .wallet-number {
+      font-size: 20px;
+      font-weight: bold;
+      color: #e74c3c;
+      margin-top: 10px;
+    }
+
+    .success {
+      color: green;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>التبرع لفلسطين 🇵🇸</h1>
+
+    <input type="text" id="userWallet" placeholder="رقم محفظتك (11 رقم)" maxlength="11">
+    <input type="number" id="amount" placeholder="المبلغ الذي ستحوله">
+
+    <button onclick="confirmDonation()">تأكيد التبرع</button>
+
+    <div class="wallet-section" id="walletSection">
+      <p>رقم المحفظة الذي ستحول إليه:</p>
+      <div class="wallet-number">01040507023</div>
+      <p class="success">✅ تم إرسال بيانات التبرع بنجاح!</p>
+    </div>
+  </div>
+
+  <script>
+    function confirmDonation() {
+      var userWallet = document.getElementById('userWallet').value;
+      var amount = document.getElementById('amount').value;
+
+      if (userWallet.length !== 11 || isNaN(userWallet)) {
+        alert('يرجى إدخال رقم محفظة صحيح مكون من 11 رقم.');
+        return;
+      }
+
+      if (amount === '' || amount <= 0) {
+        alert('الرجاء إدخال مبلغ صحيح.');
+        return;
+      }
+
+      // عرض رقم المحفظة بعد التبرع
+      document.getElementById('walletSection').style.display = 'block';
+
+      // إرسال البيانات إلى ملف PHP
+      var donationData = {
+        userWallet: userWallet,
+        amount: amount
+      };
+
+      fetch('donation-data.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(donationData)
+      })
+        .then(response => {
+          if (response.ok) {
+            document.getElementById('userWallet').value = '';
+            document.getElementById('amount').value = '';
+          } else {
+            alert('حدث خطأ أثناء إرسال البيانات.');
+          }
+        });
+    }
+  </script>
+
+</body>
+
+</html>
